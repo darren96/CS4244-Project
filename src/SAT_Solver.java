@@ -5,7 +5,8 @@ import java.io.*;
 public class SAT_Solver {
   public static void main(String[] args) {
     List<Clause> clauses = getAllClausesFromFile();
-    
+    CDCL cdcl = new CDCL();
+    cdcl.checkSAT(clauses);
   }
 
   static List<Clause> getAllClausesFromFile() {

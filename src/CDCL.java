@@ -1,13 +1,17 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class CDCL {
 
-	public void checkSAT() {
-
+	public void checkSAT(List<Clause> clauses) {
+    System.out.println(unitPropagation(clauses));
+    clauses.stream().forEach(x -> System.out.println(x.literals.toString()));
 	}
 
 	// iterated application of the unit clause rule
-	private boolean unitPropagation(ArrayList<Clause> clauses) {
+	private boolean unitPropagation(List<Clause> clauses) {
 		ArrayList<Integer> propList = findUnitClauses(clauses);
 		while(propList.size() > 0) {    // check if a unit clause exists
 			for(Integer prop : propList) {
@@ -15,26 +19,25 @@ public class CDCL {
 					return false;
 				}
 
-				for(Clause clause : clauses) {
-					if(clause.literals.contains(prop)) {
-						clauses.remove(clause);
-						continue;
-					}
+				Iterator<Clause> clausesIterator = clauses.iterator();
 
-					if(clause.literals.contains(-1*prop)) {
-						clause.literals.remove(-1*prop);
+				while (clausesIterator.hasNext()) {
+					Clause clause = clausesIterator.next();
+					System.out.println(clause.literals.toString());
+					if (clause.literals.contains(prop)) {
+						clausesIterator.remove();
+					} else if (clause.literals.contains(-1*prop)) {
+						clause.literals.removeAll(Arrays.asList(-1*prop));
 					}
 				}
 			}
-
-			propList = new ArrayList<>();
-			propList.addAll(findUnitClauses(clauses));
+			propList = findUnitClauses(clauses);
 		}
 
 		return true;
 	}
 
-	private ArrayList<Integer> findUnitClauses(ArrayList<Clause> clauses) {
+	private ArrayList<Integer> findUnitClauses(List<Clause> clauses) {
 		ArrayList<Integer> unitClauses = new ArrayList<>();
 
 		for(Clause clause : clauses) {
