@@ -1,72 +1,80 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class CDCL {
 
-	public void checkSAT(List<Clause> clauses) {
-    System.out.println(unitPropagation(clauses));
-    clauses.stream().forEach(x -> System.out.println(x.literals.toString()));
+	List<Clause> clauses;
+	Map<Integer, Variable> variables;
+
+	public CDCL(List<Clause> clauses, Map<Integer, Variable> variables) {
+		this.clauses = clauses;
+		this.variables = variables;
 	}
 
-	// iterated application of the unit clause rule
-	private boolean unitPropagation(List<Clause> clauses) {
-		ArrayList<Integer> propList = findUnitClauses(clauses);
-		while(propList.size() > 0) {    // check if a unit clause exists
-			for(Integer prop : propList) {
-				if(propList.contains(-1*prop)) {
-					return false;
-				}
+    public void checkSAT() {
+        System.out.println(unitPropagation());
+    }
 
-				Iterator<Clause> clausesIterator = clauses.iterator();
+    // iterated application of the unit clause rule
+    private boolean unitPropagation() {
+        ArrayList<Integer> propList = findUnitClauses();
+        while (propList.size() > 0) {    // check if a unit clause exists
+            for (Integer prop : propList) {
+                if (propList.contains(-1 * prop)) {
+                    return false;
+                }
 
-				while (clausesIterator.hasNext()) {
-					Clause clause = clausesIterator.next();
-					System.out.println(clause.literals.toString());
-					if (clause.literals.contains(prop)) {
-						clausesIterator.remove();
-					} else if (clause.literals.contains(-1*prop)) {
-						clause.literals.removeAll(Arrays.asList(-1*prop));
-					}
-				}
-			}
-			propList = findUnitClauses(clauses);
-		}
+                Iterator<Clause> clausesIterator = clauses.iterator();
 
-		return true;
-	}
+                while (clausesIterator.hasNext()) {
+                    Clause clause = clausesIterator.next();
+                    if (clause.literals.contains(prop)) {
+                        clausesIterator.remove();
+                    } else if (clause.literals.contains(-1 * prop)) {
+                        clause.literals.removeAll(Arrays.asList(-1 * prop));
+                    }
+                }
+            }
+            propList = findUnitClauses();
+        }
 
-	private ArrayList<Integer> findUnitClauses(List<Clause> clauses) {
-		ArrayList<Integer> unitClauses = new ArrayList<>();
+        return true;
+    }
 
-		for(Clause clause : clauses) {
-			// If the clause in a unit clause
-			if(clause.literals.size() == 1) {
-				unitClauses.add(clause.literals.get(0));
-			}
-		}
+    private ArrayList<Integer> findUnitClauses() {
+        ArrayList<Integer> unitClauses = new ArrayList<>();
 
-		return unitClauses;
-	}
+        for (Clause clause : clauses) {
+            // If the clause in a unit clause
+            if (clause.literals.size() == 1) {
+                unitClauses.add(clause.literals.get(0));
+            }
+        }
 
-	// tests whether all variables have been assigned
-	private void allVarsAssigned() {
+        return unitClauses;
+    }
 
-	}
+    // tests whether all variables have been assigned
+    private boolean allVarsAssigned() {
+        for (Clause clause : clauses) {
+            if (!clause.unassignedLiterals.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	// selects a variable for truth assignment
-	private void pickBranchingVar() {
+    // selects a variable for truth assignment
+    private void pickBranchingVar() {
 
-	}
+    }
 
-	// analyzes the most recent conflict and learns a new clause from the conflict
-	private void conflictAnalysis() {
+    // analyzes the most recent conflict and learns a new clause from the conflict
+    private void conflictAnalysis() {
 
-	}
+    }
 
-	// backtracks to a decision level
-	private void backtrack() {
+    // backtracks to a decision level
+    private void backtrack() {
 
-	}
+    }
 }

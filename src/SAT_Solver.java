@@ -1,12 +1,15 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.io.*;
+import java.util.Map;
 
 public class SAT_Solver {
   public static void main(String[] args) {
     List<Clause> clauses = getAllClausesFromFile();
-    CDCL cdcl = new CDCL();
-    cdcl.checkSAT(clauses);
+    Map<Integer, Variable> variables = getAllVariables(clauses);
+    CDCL cdcl = new CDCL(clauses, variables);
+    cdcl.checkSAT();
   }
 
   static List<Clause> getAllClausesFromFile() {
@@ -26,5 +29,24 @@ public class SAT_Solver {
     }
 
     return clauses;
+  }
+
+  static Map<Integer, Variable> getAllVariables(List<Clause> clauses) {
+    Map<Integer, Variable> variableMap = new HashMap<>();
+
+    for (Clause clause : clauses) {
+      for (Integer variable : clause.literals) {
+        if (variable < 0) {
+          variable = -1 * variable;
+        }
+
+        if (variableMap.containsKey(variable)) {
+          variableMap.get(variable).noOfAppearances++;
+        } else {
+          variableMap.put(variable, new Variable(variable));
+        }
+      }
+    }
+    return variableMap;
   }
 }
