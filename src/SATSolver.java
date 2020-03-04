@@ -41,7 +41,8 @@ public class SATSolver {
 
     listOfLiteralsInClauses.stream().forEach(variable -> {
       if (variableMap.containsKey(Math.abs(variable))) {
-        variableMap.get(Math.abs(variable)).noOfAppearances++;
+        variableMap.get(Math.abs(variable)).occurences++;
+        variableMap.get(Math.abs(variable)).score++;
       } else {
         variableMap.put(Math.abs(variable), new Variable(Math.abs(variable)));
       }
