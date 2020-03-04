@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.io.*;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SATSolver {
   public static void main(String[] args) {
@@ -34,15 +35,17 @@ public class SATSolver {
   static Map<Integer, Variable> getAllVariables(List<Clause> clauses) {
     Map<Integer, Variable> variableMap = new HashMap<>();
 
-    for (Clause clause : clauses) {
-      for (Integer variable : clause.literals) {
-        if (variableMap.containsKey(Math.abs(variable))) {
-          variableMap.get(Math.abs(variable)).noOfAppearances++;
-        } else {
-          variableMap.put(Math.abs(variable), new Variable(variable));
-        }
+    List<Integer> listOfLiteralsInClauses = clauses.stream()
+            .flatMap(clause -> clause.literals.stream())
+            .collect(Collectors.toList());
+
+    listOfLiteralsInClauses.stream().forEach(variable -> {
+      if (variableMap.containsKey(Math.abs(variable))) {
+        variableMap.get(Math.abs(variable)).noOfAppearances++;
+      } else {
+        variableMap.put(Math.abs(variable), new Variable(Math.abs(variable)));
       }
-    }
+    });
     return variableMap;
   }
 }

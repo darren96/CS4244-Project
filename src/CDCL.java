@@ -58,12 +58,8 @@ public class CDCL {
 
     // tests whether all variables have been assigned
     private boolean allVarsAssigned() {
-        for (Clause clause : clauses) {
-            if (!clause.unassignedLiterals.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        return variables.values().stream()
+                .allMatch(variable -> variable.assigned != null);
     }
 
     // selects a variable for truth assignment
@@ -80,7 +76,20 @@ public class CDCL {
     private void backtrack(int decisionLevel) {
         this.decisionLevel = decisionLevel;
         for (int i = decisionList.size(); i > decisionLevel; i--){
+            variables.get(decisionList.get(i)).assigned = null;
             decisionList.remove(i);
         }
+    }
+
+    private void randomVarPicker() {
+	    Random random = new Random();
+	    int randomInteger = random.nextInt(variables.size() - 1);
+
+	    while (variables.get(randomInteger).assigned) {
+	        randomInteger = random.nextInt(variables.size() - 1);
+        }
+
+	    decisionList.add(randomInteger);
+	    variables.get(randomInteger).assigned = random.nextBoolean();
     }
 }

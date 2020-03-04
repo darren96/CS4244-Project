@@ -5,7 +5,7 @@ public class Variable {
 
     public Variable(Integer variable) {
         this.variable = variable;
-        this.assigned = false;
+        this.assigned = null;
         this.noOfAppearances = 1;
     }
 }
