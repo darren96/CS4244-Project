@@ -4,10 +4,13 @@ public class CDCL {
 
 	List<Clause> clauses;
 	Map<Integer, Variable> variables;
+	int decisionLevel;
+	List<Integer> decisionList = new ArrayList<>();
 
 	public CDCL(List<Clause> clauses, Map<Integer, Variable> variables) {
 		this.clauses = clauses;
 		this.variables = variables;
+		this.decisionLevel = 0;
 	}
 
     public void checkSAT() {
@@ -74,7 +77,10 @@ public class CDCL {
     }
 
     // backtracks to a decision level
-    private void backtrack() {
-
+    private void backtrack(int decisionLevel) {
+        this.decisionLevel = decisionLevel;
+        for (int i = decisionList.size(); i > decisionLevel; i--){
+            decisionList.remove(i);
+        }
     }
 }

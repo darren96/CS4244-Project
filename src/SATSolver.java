@@ -4,7 +4,7 @@ import java.util.List;
 import java.io.*;
 import java.util.Map;
 
-public class SAT_Solver {
+public class SATSolver {
   public static void main(String[] args) {
     List<Clause> clauses = getAllClausesFromFile();
     Map<Integer, Variable> variables = getAllVariables(clauses);
@@ -36,14 +36,10 @@ public class SAT_Solver {
 
     for (Clause clause : clauses) {
       for (Integer variable : clause.literals) {
-        if (variable < 0) {
-          variable = -1 * variable;
-        }
-
-        if (variableMap.containsKey(variable)) {
-          variableMap.get(variable).noOfAppearances++;
+        if (variableMap.containsKey(Math.abs(variable))) {
+          variableMap.get(Math.abs(variable)).noOfAppearances++;
         } else {
-          variableMap.put(variable, new Variable(variable));
+          variableMap.put(Math.abs(variable), new Variable(variable));
         }
       }
     }
