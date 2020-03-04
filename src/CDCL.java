@@ -55,7 +55,8 @@ public class CDCL {
                     if (clause.literals.contains(prop)) {
                         clausesIterator.remove();
                     } else if (clause.literals.contains(-1 * prop)) {
-                        clause.literals.removeAll(Arrays.asList(-1 * prop));
+                        variables.get(Math.abs(prop)).dead = true;
+                        clause.deadLiterals.add(-1 * prop);
                     }
                 }
             }
@@ -81,6 +82,7 @@ public class CDCL {
     // tests whether all variables have been assigned
     private boolean allVarsAssigned() {
         return variables.values().stream()
+                .filter(variable -> !variable.dead)
                 .allMatch(variable -> variable.truthValue != null);
     }
 
