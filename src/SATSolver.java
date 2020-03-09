@@ -6,21 +6,29 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SATSolver {
+  static List<Variable> variables = new ArrayList<>();
+  static List<Clause> clauses = new ArrayList<>();
+
   public static void main(String[] args) {
-    List<Clause> clauses = getAllClausesFromFile();
-    Map<Integer, Variable> variables = getAllVariables(clauses);
+    initialise();
     CDCL cdcl = new CDCL(clauses, variables);
     cdcl.checkSAT();
   }
 
-  static List<Clause> getAllClausesFromFile() {
+  static void initialise() {
     InputStreamReader inputStreamReader = new InputStreamReader(System.in);
     BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
     String line;
-    List<Clause> clauses = new ArrayList<>();
 
     try {
       while ((line = bufferedReader.readLine()) != null) {
+        if (line.trim().startsWith("p")) {
+          String[] tokens = line.split(" ");
+          for (int i = 0; i < Integer.parseInt(tokens[2]); i ++) {
+            variables.add(new Variable(i));
+          }
+        }
+
         if (line.trim().endsWith("0")) {
           clauses.add(new Clause(line.trim()));
         }
@@ -28,25 +36,5 @@ public class SATSolver {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    return clauses;
-  }
-
-  static Map<Integer, Variable> getAllVariables(List<Clause> clauses) {
-    Map<Integer, Variable> variableMap = new HashMap<>();
-
-    List<Integer> listOfLiteralsInClauses = clauses.stream()
-            .flatMap(clause -> clause.literals.stream())
-            .collect(Collectors.toList());
-
-    listOfLiteralsInClauses.stream().forEach(variable -> {
-      if (variableMap.containsKey(Math.abs(variable))) {
-        variableMap.get(Math.abs(variable)).occurences++;
-        variableMap.get(Math.abs(variable)).score++;
-      } else {
-        variableMap.put(Math.abs(variable), new Variable(Math.abs(variable)));
-      }
-    });
-    return variableMap;
   }
 }
