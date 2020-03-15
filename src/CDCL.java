@@ -61,7 +61,6 @@ public class CDCL {
                 prop = propList.get(i);
                 assignValue = prop > 0;
 
-
                 if (propList.contains(-1 * prop) || (variables.get(Math.abs(prop) - 1).truthValue != null
                         && variables.get(Math.abs(prop) - 1).truthValue != assignValue)) {
                     System.out.println("Conflict literal: " + prop);
@@ -77,13 +76,7 @@ public class CDCL {
                             .count();
                     if (!clause.isSatisfied && unassignedLiteralCount == 0) {
                         System.out.println("UNSAT Conflicting Clause: " + clause.literals);
-                        Optional<Integer> conflictLiteral = clause.literals.stream()
-                                .filter(literal ->
-                                        assignmentList.stream()
-                                                .anyMatch(assignment -> assignment.literal == Math.abs(literal)
-                                                    && !assignment.pickBranch))
-                                .findFirst();
-                        kappaAntecedant = variables.get(Math.abs(conflictLiteral.get()) - 1).antecedant;
+                        kappaAntecedant = j;
                         System.out.println("Kappa : " + kappaAntecedant);
                         System.out.println("End Propagation\n");
                         return ClauseSatisfiability.CONFLICT;
@@ -136,7 +129,7 @@ public class CDCL {
                 }
 
                 assignValue = lastUnassignedLiteral > 0;
-                assignLiteral(new Assignment(Math.abs(lastUnassignedLiteral), assignValue, decisionLevel, false), i);
+                assignLiteral(new Assignment(Math.abs(lastUnassignedLiteral), assignValue, decisionLevel - 1, false), i);
             }
         }
         System.out.println();
@@ -176,10 +169,10 @@ public class CDCL {
             // For every literal in the conflicting clause recorded at kappa antecedant
             // Count the literal that has conflicts on this level
             for (int i = 0; i < learntClause.literals.size(); i++) {
-                literal = Math.abs(learntClause.literals.get(i)) - 1;
+                literal = learntClause.literals.get(i);
 
                 System.out.println("Literal: " + (literal));
-                System.out.println("Literal's Antecedant: " + variables.get(literal).antecedant);
+                System.out.println("Literal's Antecedant: " + variables.get(Math.abs(literal) - 1).antecedant);
                 System.out.println("Literal's Assignment Level: " + findLiteralAssignmentLevel(literal));
 
                 // if literal assignment level is the same as conflicting level
@@ -190,8 +183,8 @@ public class CDCL {
                 // if literal assignment level is the same as conflicting level
                 // and its antecedant clause is assigned
                 if (findLiteralAssignmentLevel(literal) == conflictDecisionLevel
-                        && variables.get(literal).antecedant != -1) {
-                    resolvingLiteral = literal;
+                        && variables.get(Math.abs(literal) - 1).antecedant != -1) {
+                    resolvingLiteral = Math.abs(literal) - 1;
                 }
             }
 
@@ -307,21 +300,25 @@ public class CDCL {
 	        if (Math.abs(currentLiteral) == resolvingLiteral) {
                 literalIterator.remove();
             }
+	        if (literalsSet.contains(currentLiteral) || literalsSet.contains(-currentLiteral)) {
+	            literalsSet.remove(currentLiteral);
+	            literalsSet.remove(-currentLiteral);
+            }
         }
 
         return new ArrayList<>(literalsSet);
     }
 
     private int findLiteralAssignmentLevel(int literal) {
-	    int assingmentLevel = -1;
+	    int assignmentLevel = -1;
 
 	    for (int i = 0; i < assignmentList.size(); i++) {
 	        if (assignmentList.get(i).literal == literal) {
-	            assingmentLevel = i;
+	            assignmentLevel = assignmentList.get(i).decisionLevel;
             }
         }
 
-	    return assingmentLevel;
+	    return assignmentLevel;
     }
 
     private void assignLiteral(Assignment assignment, int antecedant) {
