@@ -1,9 +1,6 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.io.*;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SATSolver {
     static List<Variable> variables = new ArrayList<>();
