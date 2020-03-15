@@ -15,9 +15,9 @@ public class Clause {
 
     public Clause(String clauseString) {
         literals = Arrays.stream(clauseString.substring(0, clauseString.length() - 2)
-            .trim().split("\\s+"))
-            .map(Integer::parseInt)
-            .collect(Collectors.toList());
+                .trim().split("\\s+"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
         isSatisfied = false;
     }
 }
