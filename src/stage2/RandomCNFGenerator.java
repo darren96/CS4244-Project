@@ -1,0 +1,80 @@
+package stage2;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
+public class RandomCNFGenerator {
+
+    private static final String BASE_PATH = "input" + File.separator + "generated" + File.separator;
+
+    public static void main(String[] args) {
+        System.out.print("Please key in the value of k, n and r (in the form of <k> <n> <r>): ");
+        InputStreamReader inputStreamReader = new InputStreamReader(System.in);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        int k = 0;
+        int n = 0;
+        double r = 0;
+        try {
+            String temp = bufferedReader.readLine();
+            String[] list = temp.split(" ");
+            k = Integer.parseInt(list[0]);
+            n = Integer.parseInt(list[1]);
+            r = Double.parseDouble(list[2]);
+            generateCNF(k, n, r);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bufferedReader.close();
+                inputStreamReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void generateCNF(int k, int n, double r) throws IOException {
+        Random random = new Random();
+        String fileName = String.format("k%d_n%d_r%.1f.cnf", k, n, r);
+        System.out.println("Generating for file: " + fileName);
+        FileWriter fileWriter = new FileWriter(BASE_PATH + fileName);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        int noOfClauses = (int) Math.ceil(r * n);
+        int i = 0;
+        Set<Integer> literalsSet = new HashSet<>();
+        String line = "";
+        Integer[] literals;
+
+        bufferedWriter.write(String.format("c This cnf file is generated with the following input: k = %d, n = %d, r "
+                + "= %.1f" + System.lineSeparator(), k, n , r));
+        bufferedWriter.write(String.format("p cnf %d %d" + System.lineSeparator(), n , noOfClauses));
+
+        while (i < noOfClauses) {
+            while (literalsSet.size() < k) {
+                int literal = random.nextInt(n) + 1;
+                literal = random.nextBoolean() ? literal : -literal;
+
+                if (literalsSet.contains(literal)) {
+                    continue;
+                }
+
+                literalsSet.add(literal);
+            }
+            literals = literalsSet.toArray(new Integer[0]);
+            line = String.format("%d %d %d 0" + System.lineSeparator(), literals[0], literals[1], literals[2]);
+            bufferedWriter.write(line);
+            literalsSet.clear();
+            i++;
+        }
+
+        bufferedWriter.close();
+    }
+}
