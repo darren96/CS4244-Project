@@ -102,6 +102,7 @@ public class CNFAnalyzer {
         bufferedWriter.write("r,filename,time taken to solve (ms),satisfiability" + System.lineSeparator());
 
         bufferedWriter.write(results + System.lineSeparator());
+        bufferedWriter.write(System.lineSeparator());
 
         bufferedWriter.write("SAT Files" + System.lineSeparator());
         bufferedWriter.write(String.join(System.lineSeparator(), satFiles));

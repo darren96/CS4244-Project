@@ -78,7 +78,11 @@ public class RandomCNFGenerator {
 
             // Add the clause into the cnf
             literals = literalsSet.toArray(new Integer[0]);
-            line = String.format("%d %d %d 0", literals[0], literals[1], literals[2]);
+            line = "";
+            for (int x = 0; x < k; x++) {
+                line += literals[x] + " ";
+            }
+            line += "0";
             cnf.add(line);
             literalsSet.clear();
             i++;
