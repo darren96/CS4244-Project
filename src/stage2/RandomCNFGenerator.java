@@ -124,7 +124,7 @@ public class RandomCNFGenerator {
             if (!Files.exists(Paths.get(BASE_PATH + kDirectory + rDirectory))) {
                 Files.createDirectory(Paths.get(BASE_PATH + kDirectory + rDirectory));
             }
-            fileName += String.format("_%d.cnf", fileIndex);
+            fileName += String.format("_%02d.cnf", fileIndex);
         }
 
         System.out.println("Generating for file: " + fileName);
