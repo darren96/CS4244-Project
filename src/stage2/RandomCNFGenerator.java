@@ -110,20 +110,25 @@ public class RandomCNFGenerator {
      */
     public static void writeCNFToFile(List<String> cnf, int k, int n, double r, int fileIndex) throws IOException {
         String fileName = String.format("k%d_n%d_r%.1f", k, n, r);
-        String directory = "";
+        String kDirectory = "";
+        String rDirectory = "";
 
         if (fileIndex == 0) {
             fileName += ".cnf";
         } else {
-            directory = String.format("k%d" + File.separator, k);
-            if (!Files.exists(Paths.get(BASE_PATH + directory))) {
-                Files.createDirectory(Paths.get(BASE_PATH + directory));
+            kDirectory = String.format("k%d" + File.separator, k);
+            rDirectory = String.format("r%.1f" + File.separator, r);
+            if (!Files.exists(Paths.get(BASE_PATH + kDirectory))) {
+                Files.createDirectory(Paths.get(BASE_PATH + kDirectory));
+            }
+            if (!Files.exists(Paths.get(BASE_PATH + kDirectory + rDirectory))) {
+                Files.createDirectory(Paths.get(BASE_PATH + kDirectory + rDirectory));
             }
             fileName += String.format("_%d.cnf", fileIndex);
         }
 
         System.out.println("Generating for file: " + fileName);
-        FileWriter fileWriter = new FileWriter(BASE_PATH + directory + fileName);
+        FileWriter fileWriter = new FileWriter(BASE_PATH + kDirectory + rDirectory + fileName);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
         bufferedWriter.write(String.format("c This cnf file is generated with the following input: k = %d, n = %d, r "
