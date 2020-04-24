@@ -46,9 +46,15 @@ public class RandomCNFGenerator {
         }
     }
 
-    public static List<String> generateCNF(int k, int n, double r) throws IOException {
+    /**
+     * This is used to generate the CNF randomly with the given value k, n and r
+     * @param k Number of literals / k-clause
+     * @param n Number of variables
+     * @param r Determinant of number of clauses generated
+     * @return a list of clauses in dimacs format
+     */
+    public static List<String> generateCNF(int k, int n, double r) {
         Random random = new Random();
-
         int noOfClauses = (int) Math.ceil(r * n);
         int i = 0;
         Set<Integer> literalsSet = new HashSet<>();
@@ -57,16 +63,20 @@ public class RandomCNFGenerator {
         List<String> cnf = new ArrayList<>();
 
         while (i < noOfClauses) {
+            // while this clause has less than k literals
             while (literalsSet.size() < k) {
                 int literal = random.nextInt(n) + 1;
                 literal = random.nextBoolean() ? literal : -literal;
 
+                // if this clause has the same literals (no matter positive or negative literal), skip
                 if (literalsSet.contains(literal) || literalsSet.contains(-literal)) {
                     continue;
                 }
 
                 literalsSet.add(literal);
             }
+
+            // Add the clause into the cnf
             literals = literalsSet.toArray(new Integer[0]);
             line = String.format("%d %d %d 0", literals[0], literals[1], literals[2]);
             cnf.add(line);
@@ -77,10 +87,27 @@ public class RandomCNFGenerator {
         return cnf;
     }
 
+    /**
+     * This method is used to write cnf to a file when generating only one CNF for each k, n and r
+     * @param cnf The generated list of clause in the Random CNF
+     * @param k Number of literals / k-clause
+     * @param n Number of variables
+     * @param r Determinant of number of clauses generated
+     * @throws IOException
+     */
     public static void writeCNFToFile(List<String> cnf, int k, int n, double r) throws IOException {
         writeCNFToFile(cnf, k, n, r, 0);
     }
 
+    /**
+     * This method is used to write cnf to a file when generating only mulitple CNF for each k, n and r
+     * @param cnf The generated list of clause in the Random CNF
+     * @param k Number of literals / k-clause
+     * @param n Number of variables
+     * @param r Determinant of number of clauses generated
+     * @param fileIndex The given index for the cnf
+     * @throws IOException
+     */
     public static void writeCNFToFile(List<String> cnf, int k, int n, double r, int fileIndex) throws IOException {
         String fileName = String.format("k%d_n%d_r%.1f", k, n, r);
         String directory = "";
