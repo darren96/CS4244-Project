@@ -6,10 +6,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+// To generate a Random CNF file
 public class RandomCNFGenerator {
 
     private static final String BASE_PATH = "input" + File.separator + "generated" + File.separator;
@@ -27,7 +32,8 @@ public class RandomCNFGenerator {
             k = Integer.parseInt(list[0]);
             n = Integer.parseInt(list[1]);
             r = Double.parseDouble(list[2]);
-            generateCNF(k, n, r);
+            List<String> cnf = generateCNF(k, n, r);
+            writeCNFToFile(cnf, k, n, r);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -40,39 +46,65 @@ public class RandomCNFGenerator {
         }
     }
 
-    private static void generateCNF(int k, int n, double r) throws IOException {
+    public static List<String> generateCNF(int k, int n, double r) throws IOException {
         Random random = new Random();
-        String fileName = String.format("k%d_n%d_r%.1f.cnf", k, n, r);
-        System.out.println("Generating for file: " + fileName);
-        FileWriter fileWriter = new FileWriter(BASE_PATH + fileName);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
         int noOfClauses = (int) Math.ceil(r * n);
         int i = 0;
         Set<Integer> literalsSet = new HashSet<>();
         String line = "";
         Integer[] literals;
-
-        bufferedWriter.write(String.format("c This cnf file is generated with the following input: k = %d, n = %d, r "
-                + "= %.1f" + System.lineSeparator(), k, n , r));
-        bufferedWriter.write(String.format("p cnf %d %d" + System.lineSeparator(), n , noOfClauses));
+        List<String> cnf = new ArrayList<>();
 
         while (i < noOfClauses) {
             while (literalsSet.size() < k) {
                 int literal = random.nextInt(n) + 1;
                 literal = random.nextBoolean() ? literal : -literal;
 
-                if (literalsSet.contains(literal)) {
+                if (literalsSet.contains(literal) || literalsSet.contains(-literal)) {
                     continue;
                 }
 
                 literalsSet.add(literal);
             }
             literals = literalsSet.toArray(new Integer[0]);
-            line = String.format("%d %d %d 0" + System.lineSeparator(), literals[0], literals[1], literals[2]);
-            bufferedWriter.write(line);
+            line = String.format("%d %d %d 0", literals[0], literals[1], literals[2]);
+            cnf.add(line);
             literalsSet.clear();
             i++;
+        }
+
+        return cnf;
+    }
+
+    public static void writeCNFToFile(List<String> cnf, int k, int n, double r) throws IOException {
+        writeCNFToFile(cnf, k, n, r, 0);
+    }
+
+    public static void writeCNFToFile(List<String> cnf, int k, int n, double r, int fileIndex) throws IOException {
+        String fileName = String.format("k%d_n%d_r%.1f", k, n, r);
+        String directory = "";
+
+        if (fileIndex == 0) {
+            fileName += ".cnf";
+        } else {
+            directory = String.format("k%d" + File.separator, k);
+            if (!Files.exists(Paths.get(BASE_PATH + directory))) {
+                Files.createDirectory(Paths.get(BASE_PATH + directory));
+            }
+            fileName += String.format("_%d.cnf", fileIndex);
+        }
+
+        System.out.println("Generating for file: " + fileName);
+        FileWriter fileWriter = new FileWriter(BASE_PATH + directory + fileName);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        bufferedWriter.write(String.format("c This cnf file is generated with the following input: k = %d, n = %d, r "
+                + "= %.1f" + System.lineSeparator(), k, n , r));
+        bufferedWriter.write(String.format("p cnf %d %d" + System.lineSeparator(), n , cnf.size()));
+
+        for (int i = 0; i < cnf.size(); i++) {
+            bufferedWriter.write(cnf.get(i) + System.lineSeparator());
         }
 
         bufferedWriter.close();
