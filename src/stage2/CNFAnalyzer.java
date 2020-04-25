@@ -18,6 +18,7 @@ import org.sat4j.reader.DimacsReader;
 import org.sat4j.specs.IProblem;
 import org.sat4j.specs.ISolver;
 
+// To generate an analytical data for the Random Generated CNF
 public class CNFAnalyzer {
 
     static List<String> satFiles = new ArrayList<>();
@@ -45,6 +46,11 @@ public class CNFAnalyzer {
         }
     }
 
+    /**
+     * Analyse each and every cnf files given the file structure in input/generated/k_
+     * @param directory The given directory eg: input/generated/k3
+     * @throws Exception
+     */
     private static void analyse(String directory) throws Exception {
         String results = "";
         Path directoryPath = Paths.get(directory);
@@ -91,6 +97,12 @@ public class CNFAnalyzer {
         writeResults(results, STATS_DIR + directoryPath.getFileName() + ".csv");
     }
 
+    /**
+     * Write the results to respective k files
+     * @param results The results generated after analysing the cnfs
+     * @param outputFile The output file name
+     * @throws IOException
+     */
     private static void writeResults(String results, String outputFile) throws IOException {
         if (!Files.exists(Paths.get(outputFile))) {
             Files.createFile(Paths.get(outputFile));
