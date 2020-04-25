@@ -1,4 +1,3 @@
-k3.csv
 r,filename,time taken to solve (ms),satisfiability
 r0.2,k3_n150_r0.2_01.cnf,4,true
 r0.2,k3_n150_r0.2_02.cnf,1,true

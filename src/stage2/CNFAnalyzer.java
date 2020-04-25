@@ -110,7 +110,6 @@ public class CNFAnalyzer {
 
         FileWriter fileWriter = new FileWriter(outputFile);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        bufferedWriter.write(Paths.get(outputFile).getFileName() + System.lineSeparator());
         bufferedWriter.write("r,filename,time taken to solve (ms),satisfiability" + System.lineSeparator());
 
         bufferedWriter.write(results + System.lineSeparator());
