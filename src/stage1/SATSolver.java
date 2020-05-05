@@ -1,3 +1,5 @@
+package stage1;
+
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
