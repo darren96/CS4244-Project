@@ -4,11 +4,19 @@ import java.util.stream.Collectors;
 
 public class Clause {
     List<Integer> literals;
-    Boolean isSatisfied;
+    Satisfiability isSatisfied;
+    int assignedLiterals;
+
+    public enum Satisfiability {
+        SAT,
+        UNSAT,
+        UNDECIDE
+    }
 
     public Clause(List<Integer> literals) {
         this.literals = literals;
-        isSatisfied = false;
+        isSatisfied = Satisfiability.UNDECIDE;
+        assignedLiterals = 0;
     }
 
     public Clause(String clauseString) {
@@ -16,6 +24,7 @@ public class Clause {
                 .trim().split("\\s+"))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
-        isSatisfied = false;
+        isSatisfied = Satisfiability.UNDECIDE;
+        assignedLiterals = 0;
     }
 }
