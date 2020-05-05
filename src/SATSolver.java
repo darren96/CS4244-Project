@@ -21,7 +21,7 @@ public class SATSolver {
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.trim().startsWith("p")) {
                     String[] tokens = line.split(" ");
-                    for (int i = 0; i < Integer.parseInt(tokens[2]); i++) {
+                    for (int i = 1; i < Integer.parseInt(tokens[2])+1; i ++) {
                         variables.add(new Variable(i));
                     }
                 }

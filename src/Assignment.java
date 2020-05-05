@@ -1,11 +1,11 @@
 public class Assignment {
-    int literal;
+    int variable;
     boolean truthValue;
     int decisionLevel;
     boolean pickBranch;
 
-    public Assignment(int literal, boolean truthValue, int decisionLevel, boolean pickBranch) {
-        this.literal = literal;
+    public Assignment(int variable, boolean truthValue, int decisionLevel, boolean pickBranch) {
+        this.variable = variable;
         this.truthValue = truthValue;
         this.decisionLevel = decisionLevel;
         this.pickBranch = pickBranch;
@@ -13,6 +13,6 @@ public class Assignment {
 
     @Override
     public String toString() {
-        return String.format("{%d=%b @Level%d, PickBranch=%b}", literal, truthValue, decisionLevel, pickBranch);
+        return String.format("{%d=%b @Level%d, PickBranch=%b}", variable, truthValue, decisionLevel, pickBranch);
     }
 }

@@ -1,7 +1,6 @@
 public class Variable {
     Integer variable;
     Boolean truthValue;
-    Integer occurences;
     Integer score;
     Integer decidedLevel;
     Integer antecedant;
@@ -9,8 +8,7 @@ public class Variable {
     public Variable(Integer variable) {
         this.variable = variable;
         this.truthValue = null;
-        this.occurences = 1;
-        this.score = 1;
+        this.score = 0;
         this.decidedLevel = -1;
         this.antecedant = -1;
     }
