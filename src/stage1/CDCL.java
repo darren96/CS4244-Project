@@ -168,6 +168,7 @@ public class CDCL {
     // tests whether all variables have been assigned
     private boolean allVarsAssigned() {
         return variables.stream()
+                .filter(variable -> variable.variable != 0)
                 .allMatch(variable -> variable.truthValue != null);
     }
 
@@ -179,23 +180,23 @@ public class CDCL {
 
     // selects a variable for truth assignment
     private Assignment pickBranchingVar() {
-        return linearVarPicker();
-        // return randomVarPicker();
+        // return linearVarPicker();
+         return randomVarPicker();
         // return VSIDSVarPicker();
     }
 
     private Assignment randomVarPicker() {
         Random random = new Random();
-        int randomInteger = random.nextInt(variables.size()) + 1;
+        int randomInteger = random.nextInt(variables.size() - 1) + 1;
 
-        while (variables.get(randomInteger).truthValue != null) {
-            randomInteger = random.nextInt(variables.size());
+        while (variables.get(randomInteger).truthValue != null || randomInteger == 0) {
+            randomInteger = random.nextInt(variables.size() - 1) + 1;
         }
 
         boolean randomTruthValue = random.nextBoolean();
         variables.get(randomInteger).truthValue = randomTruthValue;
 
-        return new Assignment(randomInteger + 1, randomTruthValue, decisionLevel, true);
+        return new Assignment(randomInteger, randomTruthValue, decisionLevel, true);
     }
 
     // linear var picker with random truth value assignment
