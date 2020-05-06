@@ -55,6 +55,8 @@ public class SATSolver {
                 if (line.trim().startsWith("p")) {
                     String[] tokens = line.split(" ");
                     int numOfVariables = Integer.parseInt(tokens[2]);
+                    // add dummy variable for easy access
+                    variables.add(new Variable(0));
                     for (int i = 1; i <= numOfVariables; i++) {
                         variables.add(new Variable(i));
                     }
