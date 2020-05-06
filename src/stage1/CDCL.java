@@ -155,7 +155,7 @@ public class CDCL {
         return unitClauses;
     }
 
-    // tests whether all variables have been assigned
+    // tests whether all variables have been assigned excluding dummy variable 0
     private boolean allVarsAssigned() {
         return variables.stream()
                 .filter(variable -> variable.variable != 0)
@@ -209,9 +209,8 @@ public class CDCL {
         return new Assignment(var, randomTruthValue, decisionLevel, true);
     }
 
+    // picking a branch with VSIDS heuristics
     private Assignment VSIDSVarPicker() {
-        //TODO: how to choose which truth value to assign
-
         Assignment newAssignment = null;
         Variable var = scoreHeap.poll();
 
@@ -231,10 +230,8 @@ public class CDCL {
         Clause previousLearntClause = null;
         int literalsThatConflictsAtThisLevel;
         int conflictDecisionLevel = decisionLevel;
-        int resolvingLiteral = -1;
         int literal;
         Variable var;
-        List<Assignment> tempAssignmentList = new ArrayList<>(assignmentList);
 
         Logger.printout("\nAssignment List : " + assignmentList);
         Logger.printout("Conflict Decision Level: " + conflictDecisionLevel);
@@ -276,15 +273,14 @@ public class CDCL {
                 break;
             }
 
-            // Get last assigned variable at the conflict level
-            resolvingLiteral = tempAssignmentList.remove(tempAssignmentList.size()-1).variable;
-
             // Resolve the clause with the conflicting clause and resolving literal
             // and add newly learnt clause based on the resolution
             previousLearntClause = learntClause;
-            Logger.printout("\nResolving Clause: " + learntClause.literals);
-            Logger.printout("Resolving Literals: " + resolvingLiteral);
-            learntClause = new Clause(resolve(learntClause.literals, resolvingLiteral));
+            Logger.printout("\nLearnt Clause: " + learntClause.literals);
+            if (resolvingClause != null) {
+                Logger.printout("Resolving Clause: " + resolvingClause);
+                learntClause = new Clause(resolve(learntClause.literals, resolvingClause.literals));
+            }
         }
 
         Logger.printout("\nLearnt Clause: " + learntClause.literals);
@@ -350,17 +346,14 @@ public class CDCL {
     }
 
 
-    private List<Integer> resolve(List<Integer> firstClauseLiterals, int resolvingLiteral) {
-        List<Integer> secondClauseLiterals = clauses.get(variables.get(Math.abs(resolvingLiteral)).antecedant).literals;
+    private List<Integer> resolve(List<Integer> firstClauseLiterals, List<Integer> resolvingClause) {
         Set<Integer> literalsSet = new HashSet<>();
         literalsSet.addAll(firstClauseLiterals);
-        literalsSet.addAll(secondClauseLiterals);
+        literalsSet.addAll(resolvingClause);
 
-        while(literalsSet.contains(resolvingLiteral)) {
-            literalsSet.remove(resolvingLiteral);
-        }
-        while(literalsSet.contains((-1)*resolvingLiteral)) {
-            literalsSet.remove((-1)*resolvingLiteral);
+        for (int resolvingLiteral : resolvingClause) {
+                literalsSet.remove(resolvingLiteral);
+                literalsSet.remove((-1) * resolvingLiteral);
         }
 
         return new ArrayList<>(literalsSet);
