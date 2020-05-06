@@ -1,3 +1,5 @@
+package stage1;
+
 public class Variable {
     Integer variable;
     Boolean truthValue;

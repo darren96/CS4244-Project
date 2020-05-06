@@ -1,10 +1,12 @@
+package stage1;
+
 public class Assignment {
     int variable;
-    boolean truthValue;
+    Boolean truthValue;
     int decisionLevel;
     boolean pickBranch;
 
-    public Assignment(int variable, boolean truthValue, int decisionLevel, boolean pickBranch) {
+    public Assignment(int variable, Boolean truthValue, int decisionLevel, boolean pickBranch) {
         this.variable = variable;
         this.truthValue = truthValue;
         this.decisionLevel = decisionLevel;

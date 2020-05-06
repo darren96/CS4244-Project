@@ -1,3 +1,5 @@
+package stage1;
+
 import java.util.*;
 
 public class CDCL {
@@ -29,10 +31,10 @@ public class CDCL {
         scoreHeap.addAll(variables);
     }
 
-    public void checkSAT() {
+    public boolean checkSAT() {
         if (unitPropagation() == ClauseSatisfiability.CONFLICT) {
             System.out.println("UNSAT");
-            return;
+            return false;
         }
 
         while (!allVarsAssigned() && !allClausesSatisfied()) {
@@ -54,7 +56,7 @@ public class CDCL {
                 System.out.println("Beta: " + beta);
                 if (beta < 0) {
                     System.out.println("UNSAT");
-                    return;
+                    return false;
                 } else {
                     System.out.println("Backtracking to level: " + beta);
                     backtrack(beta);
@@ -64,6 +66,7 @@ public class CDCL {
         }
 
         System.out.println("SAT");
+        return true;
     }
 
     // iterated application of the unit clause rule
@@ -88,11 +91,9 @@ public class CDCL {
 
                 for (int j = 0; j < clauses.size(); j++) {
                     Clause clause = clauses.get(j);
-                    int unassignedLiteralCount = (int) clause.literals.stream()
-                            .filter(literal -> variables.get(Math.abs(literal) - 1).truthValue == null)
-                            .count();
-                    if (!clause.isSatisfied && unassignedLiteralCount == 0) {
+                    if (clause.isSatisfied == Satisfiability.UNDECIDE && clause.assignedLiterals == clause.literals.size()) {
                         System.out.println("UNSAT Conflicting Clause: " + clause.literals);
+                        clause.isSatisfied = Satisfiability.UNSAT;
                         kappaAntecedant = j;
                         System.out.println("Kappa : " + kappaAntecedant);
                         System.out.println("End Propagation\n");
@@ -123,7 +124,7 @@ public class CDCL {
             Clause clause = clauses.get(i);
             unassignedCount = 0;
             System.out.println("Clause assessing: " + clause.literals);
-            if (clause.isSatisfied) {
+            if (clause.isSatisfied == Satisfiability.SAT) {
                 System.out.println("Clause is already satisfied");
                 continue;
             }
@@ -236,7 +237,7 @@ public class CDCL {
         System.out.println("\nAssignment List : " + assignmentList);
         System.out.println("Conflict Decision Level: " + conflictDecisionLevel);
 
-        if (conflictDecisionLevel == 0) {
+        if (conflictDecisionLevel == -1) {
             return -1;
         }
 
@@ -392,7 +393,10 @@ public class CDCL {
         int literal = assignment.truthValue ? assignment.variable : -1 * assignment.variable;
         clauses.stream()
                 .filter(clause -> clause.literals.contains(literal))
-                .forEach(clause -> clause.isSatisfied = true);
+                .forEach(clause -> {
+                    clause.isSatisfied = Satisfiability.SAT;
+                    clause.assignedLiterals++;
+                });
 
         variables.get(assignment.variable - 1).antecedant = antecedant;
         variables.get(assignment.variable - 1).truthValue = assignment.truthValue;
@@ -410,7 +414,10 @@ public class CDCL {
 
         clauses.stream()
                 .filter(clause -> clause.literals.contains(literal))
-                .forEach(clause -> clause.isSatisfied = false);
+                .forEach(clause -> {
+                    clause.isSatisfied = Satisfiability.UNDECIDE;
+                    clause.assignedLiterals--;
+                });
 
         variables.get(assignment.variable - 1).antecedant = -1;
         variables.get(assignment.variable - 1).truthValue = null;

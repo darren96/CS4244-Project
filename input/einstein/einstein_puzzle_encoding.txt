@@ -1,0 +1,125 @@
+House 1, Brit
+House 2, Brit
+House 3, Brit
+House 4, Brit
+House 5, Brit
+Red House, Brit
+Green House, Brit
+White House, Brit
+Yellow House, Brit
+Blue House, Brit
+Tea, Brit
+Coffee, Brit
+Milk, Brit
+Beer, Brit
+Water, Brit
+Pall Mall, Brit
+Dunhill, Brit
+Blends, Brit
+Bluemasters, Brit
+Prince, Brit
+Dog, Brit
+Bird, Brit
+Cat, Brit
+Horse, Brit
+Fish, Brit
+House 1, Swede
+House 2, Swede
+House 3, Swede
+House 4, Swede
+House 5, Swede
+Red House, Swede
+Green House, Swede
+White House, Swede
+Yellow House, Swede
+Blue House, Swede
+Tea, Swede
+Coffee, Swede
+Milk, Swede
+Beer, Swede
+Water, Swede
+Pall Mall, Swede
+Dunhill, Swede
+Blends, Swede
+Bluemasters, Swede
+Prince, Swede
+Dog, Swede
+Bird, Swede
+Cat, Swede
+Horse, Swede
+Fish, Swede
+House 1, Dane
+House 2, Dane
+House 3, Dane
+House 4, Dane
+House 5, Dane
+Red House, Dane
+Green House, Dane
+White House, Dane
+Yellow House, Dane
+Blue House, Dane
+Tea, Dane
+Coffee, Dane
+Milk, Dane
+Beer, Dane
+Water, Dane
+Pall Mall, Dane
+Dunhill, Dane
+Blends, Dane
+Bluemasters, Dane
+Prince, Dane
+Dog, Dane
+Bird, Dane
+Cat, Dane
+Horse, Dane
+Fish, Dane
+House 1, German
+House 2, German
+House 3, German
+House 4, German
+House 5, German
+Red House, German
+Green House, German
+White House, German
+Yellow House, German
+Blue House, German
+Tea, German
+Coffee, German
+Milk, German
+Beer, German
+Water, German
+Pall Mall, German
+Dunhill, German
+Blends, German
+Bluemasters, German
+Prince, German
+Dog, German
+Bird, German
+Cat, German
+Horse, German
+Fish, German
+House 1, Norwegian
+House 2, Norwegian
+House 3, Norwegian
+House 4, Norwegian
+House 5, Norwegian
+Red House, Norwegian
+Green House, Norwegian
+White House, Norwegian
+Yellow House, Norwegian
+Blue House, Norwegian
+Tea, Norwegian
+Coffee, Norwegian
+Milk, Norwegian
+Beer, Norwegian
+Water, Norwegian
+Pall Mall, Norwegian
+Dunhill, Norwegian
+Blends, Norwegian
+Bluemasters, Norwegian
+Prince, Norwegian
+Dog, Norwegian
+Bird, Norwegian
+Cat, Norwegian
+Horse, Norwegian
+Fish, Norwegian
