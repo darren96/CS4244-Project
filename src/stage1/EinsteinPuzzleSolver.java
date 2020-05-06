@@ -42,7 +42,10 @@ public class EinsteinPuzzleSolver {
                 }
                 if (line.trim().startsWith("p")) {
                     String[] tokens = line.split(" ");
-                    for (int i = 0; i < Integer.parseInt(tokens[2]); i++) {
+                    int numOfVariables = Integer.parseInt(tokens[2]);
+                    // add dummy variable for easy access
+                    variables.add(new Variable(0));
+                    for (int i = 1; i <= numOfVariables; i++) {
                         variables.add(new Variable(i));
                     }
                     continue;
@@ -103,7 +106,7 @@ public class EinsteinPuzzleSolver {
         System.out.println(System.lineSeparator() + "Assignments:");
         for (Assignment assignment : cdcl.assignmentList) {
             if (assignment.truthValue) {
-                System.out.println(pairs.get(assignment.literal - 1));
+                System.out.println(pairs.get(assignment.variable - 1));
             }
         }
     }
