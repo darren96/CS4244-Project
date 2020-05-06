@@ -47,8 +47,8 @@ public class CDCL {
         while (!allVarsAssigned() && !allClausesSatisfied()) {
             Logger.printout("--------------------------------");
             Logger.printout("Not All Variables are assigned");
-            Logger.printout("Decision Level: " + decisionLevel);
             decisionLevel++;
+            Logger.printout("Decision Level: " + decisionLevel);
             Assignment assignment = pickBranchingVar();
             assignLiteral(assignment, -1);
             while (unitPropagation() == ClauseSatisfiability.CONFLICT) {
@@ -203,6 +203,9 @@ public class CDCL {
         int var = 0;
         Random random = new Random();
         for (Variable variable : variables) {
+            if (variable.variable == 0) {
+                continue;
+            }
             if (variable.truthValue == null) {
                 var = variables.indexOf(variable);
                 break;
