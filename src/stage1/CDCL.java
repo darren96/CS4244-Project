@@ -1,8 +1,6 @@
 package stage1;
 
 import java.util.*;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
 
 import stage1.Clause.Satisfiability;
 
@@ -18,7 +16,6 @@ public class CDCL {
     List<Assignment> assignmentList = new ArrayList<>();
     PriorityQueue<Variable> scoreHeap = new PriorityQueue<>((v1, v2) -> v2.score.compareTo(v1.score));
     int kappaAntecedant = -1;
-    Logger logger = Logger.getLogger(CDCL.class.getName());
 
     public CDCL(List<Clause> clauses, List<Variable> variables) {
         this.clauses = clauses;
@@ -27,27 +24,26 @@ public class CDCL {
     }
 
     public boolean checkSAT() {
-        logger.setUseParentHandlers(false);
         if (unitPropagation() == ClauseSatisfiability.CONFLICT) {
             System.out.println("UNSAT");
             return false;
         }
 
         while (!allVarsAssigned()) {
-            logger.info("--------------------------------");
-            logger.info("Not All Variables are assigned");
-            logger.info("Decision Level: " + decisionLevel);
+            System.out.println("--------------------------------");
+            System.out.println("Not All Variables are assigned");
+            System.out.println("Decision Level: " + decisionLevel);
             Assignment assignment = pickBranchingVar();
             assignLiteral(assignment, -1);
             decisionLevel++;
             if (unitPropagation() == ClauseSatisfiability.CONFLICT) {
                 Integer beta = conflictAnalysis();
-                logger.info("Beta: " + beta);
+                System.out.println("Beta: " + beta);
                 if (beta < 0) {
                     System.out.println("UNSAT");
                     return false;
                 } else {
-                    logger.info("Backtracking to level: " + beta);
+                    System.out.println("Backtracking to level: " + beta);
                     backtrack(beta);
                     decisionLevel = beta;
                 }
@@ -60,21 +56,21 @@ public class CDCL {
 
     // iterated application of the unit clause rule
     private ClauseSatisfiability unitPropagation() {
-        logger.info("\nUnit Propagation");
+        System.out.println("\nUnit Propagation");
         List<Integer> propList = new ArrayList<>(findUnitClauses());
         int prop;
         boolean assignValue;
         while (propList.size() > 0) {    // check if a unit clause exists
-            logger.info("PropList: " + propList);
+            System.out.println("PropList: " + propList);
             for (int i = 0; i < propList.size(); i++) {
                 prop = propList.get(i);
                 assignValue = prop > 0;
 
                 if (propList.contains(-1 * prop) || (variables.get(Math.abs(prop) - 1).truthValue != null
                         && variables.get(Math.abs(prop) - 1).truthValue != assignValue)) {
-                    logger.info("Conflict literal: " + prop);
-                    logger.info("Kappa: " + kappaAntecedant);
-                    logger.info("End Propagation\n");
+                    System.out.println("Conflict literal: " + prop);
+                    System.out.println("Kappa: " + kappaAntecedant);
+                    System.out.println("End Propagation\n");
                     return ClauseSatisfiability.CONFLICT;
                 }
             }
@@ -84,15 +80,15 @@ public class CDCL {
         for (int i = 0; i < clauses.size(); i++) {
             Clause clause = clauses.get(i);
             if (clause.isSatisfied == Satisfiability.UNSAT) {
-                logger.info("UNSAT Clause: " + clause.literals);
+                System.out.println("UNSAT Clause: " + clause.literals);
                 kappaAntecedant = i;
-                logger.info("Kappa: " + kappaAntecedant);
-                logger.info("End Propagation\n");
+                System.out.println("Kappa: " + kappaAntecedant);
+                System.out.println("End Propagation\n");
                 return ClauseSatisfiability.CONFLICT;
             }
         }
 
-        logger.info("End Propagation\n");
+        System.out.println("End Propagation\n");
         kappaAntecedant = -1;
         return ClauseSatisfiability.UNSOLVED;
     }
@@ -103,10 +99,10 @@ public class CDCL {
         boolean assignValue;
         for (int i = 0; i < clauses.size(); i++) {
             Clause clause = clauses.get(i);
-//            logger.info("Clause assessing: " + clause.literals);
-//            logger.info("Unassigned literals: " + (clause.literals.size() - clause.assignedLiterals.size()));
+            System.out.println("Clause assessing: " + clause.literals);
+            System.out.println("Unassigned literals: " + (clause.literals.size() - clause.assignedLiterals.size()));
             if (clause.isSatisfied == Satisfiability.SAT) {
-//                logger.info("Clause is already satisfied");
+//                System.out.println("Clause is already satisfied");
                 continue;
             }
 
@@ -119,7 +115,7 @@ public class CDCL {
             // If the clause in a unit clause
             if (clause.literals.size() - clause.assignedLiterals.size() == 1) {
                 unitClauses.add(lastUnassignedLiteral);
-//                logger.info("Unit Clause Found: " + clause.literals);
+//                System.out.println("Unit Clause Found: " + clause.literals);
 
                 if (unitClauses.contains(-lastUnassignedLiteral)) {
                     kappaAntecedant = i;
@@ -154,8 +150,8 @@ public class CDCL {
         int conflictDecisionLevel = decisionLevel;
         int literal;
 
-        logger.info("\nAssignment List : " + assignmentList);
-        logger.info("Conflict Decision Level: " + conflictDecisionLevel);
+        System.out.println("\nAssignment List : " + assignmentList);
+        System.out.println("Conflict Decision Level: " + conflictDecisionLevel);
 
         if (conflictDecisionLevel == 0) {
             return -1;
@@ -163,7 +159,7 @@ public class CDCL {
 
         while (!learntClause.equals(previousLearntClause)) {
             literalsThatConflictsAtThisLevel = 0;
-            logger.info("Conflict Level Count: " + literalsThatConflictsAtThisLevel);
+            System.out.println("Conflict Level Count: " + literalsThatConflictsAtThisLevel);
 
             resolvingClause = null;
 
@@ -172,9 +168,9 @@ public class CDCL {
             for (int i = 0; i < learntClause.literals.size(); i++) {
                 literal = learntClause.literals.get(i);
 
-//                logger.info("Literal: " + (literal));
-//                logger.info("Literal's Antecedant: " + variables.get(Math.abs(literal) - 1).antecedant);
-//                logger.info("Literal's Assignment Level: " + findLiteralAssignmentLevel(literal));
+                System.out.println("Literal: " + (literal));
+                System.out.println("Literal's Antecedant: " + variables.get(Math.abs(literal) - 1).antecedant);
+                System.out.println("Literal's Assignment Level: " + findLiteralAssignmentLevel(literal));
 
                 // if literal assignment level is the same as conflicting level
                 if (findLiteralAssignmentLevel(literal) == conflictDecisionLevel) {
@@ -196,15 +192,15 @@ public class CDCL {
 
             // Resolve the clause with the conflicting clause and resolving literal
             // and add newly learnt clause based on the resolution
-            logger.info("\nPrevious Learnt Clause: " + learntClause.literals);
+            System.out.println("\nPrevious Learnt Clause: " + learntClause.literals);
             previousLearntClause = learntClause;
             if (resolvingClause != null) {
-//                logger.info("Resolving Clause: " + resolvingClause.literals);
+//                System.out.println("Resolving Clause: " + resolvingClause.literals);
                 learntClause = new Clause(resolve(learntClause.literals, resolvingClause));
             }
         }
 
-        logger.info("\nLearnt Clause: " + learntClause.literals);
+        System.out.println("\nLearnt Clause: " + learntClause.literals);
 
         if (resolvingClause != null) {
             // add the newly created clause as a new clause
@@ -249,7 +245,7 @@ public class CDCL {
                 break;
             }
 
-//            logger.info("Removing assignment: " + assignmentList.get(i));
+            System.out.println("Removing assignment: " + assignmentList.get(i));
             unassignLiteral(assignmentList.get(i));
             assignmentList.remove(i);
         }
@@ -344,10 +340,10 @@ public class CDCL {
 
         assignmentList.add(assignment);
 
-//        logger.info(String.format("Variables %s assigned to value %b", assignment.literal,
-//                assignment.truthValue));
-//        logger.info(String.format("Antecedant clause %d assigned to literal %d",
-//                antecedant, assignment.literal));
+        System.out.println(String.format("Variables %s assigned to value %b", assignment.literal,
+                assignment.truthValue));
+        System.out.println(String.format("Antecedant clause %d assigned to literal %d",
+                antecedant, assignment.literal));
     }
 
     private void unassignLiteral(Assignment assignment) {
