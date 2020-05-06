@@ -1,6 +1,0 @@
-c Simple unsatisfiable formula with 2 variables.
-p cnf 2 4
-1 2 0
-1 -2 0
--1 -2 0
--1 2 0
