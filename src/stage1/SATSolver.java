@@ -33,6 +33,8 @@ public class SATSolver {
         boolean isSatisfiable = cdcl.checkSAT();
         if (isSatisfiable) {
             printAssignment(cdcl);
+        } else {
+            System.out.println("UNSAT");
         }
     }
 
@@ -52,7 +54,10 @@ public class SATSolver {
                 }
                 if (line.trim().startsWith("p")) {
                     String[] tokens = line.split(" ");
-                    for (int i = 0; i < Integer.parseInt(tokens[2]); i++) {
+                    int numOfVariables = Integer.parseInt(tokens[2]);
+                    // add dummy variable for easy access
+                    variables.add(new Variable(0));
+                    for (int i = 1; i <= numOfVariables; i++) {
                         variables.add(new Variable(i));
                     }
                     continue;
@@ -83,7 +88,7 @@ public class SATSolver {
     public static void printAssignment(CDCL cdcl) {
         System.out.println(System.lineSeparator() + "Assignments:");
         for (Assignment assignment : cdcl.assignmentList) {
-            System.out.println(assignment.literal + ": " + assignment.truthValue);
+            System.out.println(assignment.variable + ": " + assignment.truthValue);
         }
     }
 }
