@@ -33,6 +33,8 @@ public class SATSolver {
         boolean isSatisfiable = cdcl.checkSAT();
         if (isSatisfiable) {
             printAssignment(cdcl);
+        } else {
+            System.out.println("UNSAT");
         }
     }
 
