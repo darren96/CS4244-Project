@@ -42,7 +42,8 @@ public class EinsteinPuzzleSolver {
                 }
                 if (line.trim().startsWith("p")) {
                     String[] tokens = line.split(" ");
-                    for (int i = 0; i < Integer.parseInt(tokens[2]); i++) {
+                    int numOfVariables = Integer.parseInt(tokens[2]);
+                    for (int i = 0; i < numOfVariables; i++) {
                         variables.add(new Variable(i));
                     }
                     continue;

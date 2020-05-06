@@ -29,7 +29,7 @@ public class CDCL {
 
         for (Clause clause : clauses) {
             for (int literal : clause.literals) {
-                variables.get(Math.abs(literal)-1).score++;
+                variables.get(Math.abs(literal)).score++;
             }
         }
         scoreHeap.addAll(variables);
@@ -88,8 +88,8 @@ public class CDCL {
                 prop = propList.get(i);
                 assignValue = prop > 0;
 
-                if (propList.contains(-1 * prop) || (variables.get(Math.abs(prop) - 1).truthValue != null
-                        && variables.get(Math.abs(prop) - 1).truthValue != assignValue)) {
+                if (propList.contains(-1 * prop) || (variables.get(Math.abs(prop)).truthValue != null
+                        && variables.get(Math.abs(prop)).truthValue != assignValue)) {
                     Logger.printout("Conflict literal: " + prop);
                     Logger.printout("Kappa : " + kappaAntecedant);
                     Logger.printout("End Propagation\n");
@@ -137,7 +137,7 @@ public class CDCL {
             }
 
             for (int literal : clause.literals) {
-                if (variables.get(Math.abs(literal) - 1).truthValue == null) {
+                if (variables.get(Math.abs(literal)).truthValue == null) {
                     unassignedCount++;
                     lastUnassignedLiteral = literal;
                 }
@@ -155,7 +155,7 @@ public class CDCL {
 
                 assignValue = lastUnassignedLiteral > 0;
                 assignLiteral(new Assignment(Math.abs(lastUnassignedLiteral), assignValue, decisionLevel, false), i);
-                scoreHeap.remove(variables.get(Math.abs(lastUnassignedLiteral)-1));
+                scoreHeap.remove(variables.get(Math.abs(lastUnassignedLiteral)));
             } else if (unassignedCount == 0) {
                 Logger.printout("No unassigned variables");
             } else {
@@ -186,7 +186,7 @@ public class CDCL {
 
     private Assignment randomVarPicker() {
         Random random = new Random();
-        int randomInteger = random.nextInt(variables.size()-1);
+        int randomInteger = random.nextInt(variables.size()) + 1;
 
         while (variables.get(randomInteger).truthValue != null) {
             randomInteger = random.nextInt(variables.size());
@@ -200,19 +200,19 @@ public class CDCL {
 
     // linear var picker with random truth value assignment
     private Assignment linearVarPicker() {
-        int literalIndex = -1;
+        int var = 0;
         Random random = new Random();
         for (Variable variable : variables) {
             if (variable.truthValue == null) {
-                literalIndex = variables.indexOf(variable);
+                var = variables.indexOf(variable);
                 break;
             }
         }
 
         boolean randomTruthValue = random.nextBoolean();
-        variables.get(literalIndex).truthValue = randomTruthValue;
+        variables.get(var).truthValue = randomTruthValue;
 
-        return new Assignment(literalIndex + 1, randomTruthValue, decisionLevel, true);
+        return new Assignment(var, randomTruthValue, decisionLevel, true);
     }
 
     private Assignment VSIDSVarPicker() {
@@ -257,7 +257,7 @@ public class CDCL {
                 literal = learntClause.literals.get(i);
 
                 Logger.printout("Literal: " + (literal));
-                Logger.printout("Literal's Antecedant: " + variables.get(Math.abs(literal) - 1).antecedant);
+                Logger.printout("Literal's Antecedant: " + variables.get(Math.abs(literal)).antecedant);
                 Logger.printout("Literal's Assignment Level: " + findLiteralAssignmentLevel(literal));
 
                 // if literal assignment level is the same as conflicting level
@@ -289,11 +289,8 @@ public class CDCL {
         // update the scores of the literals that is in the new clause
         for (int i = 0; i < learntClause.literals.size(); i++) {
             literal = learntClause.literals.get(i);
-            // Polarity update (reserved)
-            // boolean update = (literal > 0) ? true : false;
-            // variables.get(Math.abs(literal)).polarity += update;
 
-            var = variables.get(Math.abs(literal)-1);
+            var = variables.get(Math.abs(literal));
 
             // Update score heap
             if(scoreHeap.contains(var)) {
@@ -307,7 +304,7 @@ public class CDCL {
         // for every literals in the new clause
         for (int i = 0; i < learntClause.literals.size(); i++) {
             literal = learntClause.literals.get(i);
-            int decisionLevelHere = variables.get(Math.abs(literal) - 1).decidedLevel;
+            int decisionLevelHere = variables.get(Math.abs(literal)).decidedLevel;
 
             // if the decision level is not the conflicting decision level
             // and it is larger than backtracking decision level, set the beta
@@ -331,7 +328,7 @@ public class CDCL {
             Logger.printout("Removing assignment: " + assignmentList.get(i));
 
             // Add assigned variable back to score heap
-            var = variables.get(Math.abs(assignmentList.get(i).variable)-1);
+            var = variables.get(Math.abs(assignmentList.get(i).variable));
             if(!scoreHeap.contains(var)) {
                 scoreHeap.add(var);
             }
@@ -345,7 +342,7 @@ public class CDCL {
     }
 
     private List<Integer> resolve(List<Integer> firstClauseLiterals, int resolvingLiteral) {
-        List<Integer> secondClauseLiterals = clauses.get(variables.get(Math.abs(resolvingLiteral)-1).antecedant).literals;
+        List<Integer> secondClauseLiterals = clauses.get(variables.get(Math.abs(resolvingLiteral)).antecedant).literals;
         Set<Integer> literalsSet = new HashSet<>();
         literalsSet.addAll(firstClauseLiterals);
         literalsSet.addAll(secondClauseLiterals);
@@ -381,8 +378,8 @@ public class CDCL {
                     clause.assignedLiterals++;
                 });
 
-        variables.get(assignment.variable - 1).antecedant = antecedant;
-        variables.get(assignment.variable - 1).truthValue = assignment.truthValue;
+        variables.get(assignment.variable).antecedant = antecedant;
+        variables.get(assignment.variable).truthValue = assignment.truthValue;
 
         assignmentList.add(assignment);
 
@@ -402,7 +399,7 @@ public class CDCL {
                     clause.assignedLiterals--;
                 });
 
-        variables.get(assignment.variable - 1).antecedant = -1;
-        variables.get(assignment.variable - 1).truthValue = null;
+        variables.get(assignment.variable).antecedant = -1;
+        variables.get(assignment.variable).truthValue = null;
     }
 }
