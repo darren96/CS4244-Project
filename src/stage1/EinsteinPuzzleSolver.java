@@ -45,7 +45,7 @@ public class EinsteinPuzzleSolver {
                     int numOfVariables = Integer.parseInt(tokens[2]);
                     // add dummy variable for easy access
                     variables.add(new Variable(0));
-                    for (int i = 0; i < numOfVariables; i++) {
+                    for (int i = 1; i <= numOfVariables; i++) {
                         variables.add(new Variable(i));
                     }
                     continue;
