@@ -344,29 +344,6 @@ public class CDCL {
         Logger.printout("Reset kappaAntecedant: " + kappaAntecedant);
     }
 
-    // resolve the clause with the given literal
-//    private List<Integer> resolve(List<Integer> inputClauseLiterals, int resolvingLiteral) {
-//        Set<Integer> literalsSet = new HashSet<>(inputClauseLiterals);
-//        List<Integer> secondClauseLiterals = clauses
-//                .get(variables.get(resolvingLiteral-1).antecedant).literals;
-//        literalsSet.addAll(secondClauseLiterals);
-//
-//        Integer currentLiteral = 0;
-//        ListIterator<Integer> literalIterator = inputClauseLiterals.listIterator();
-//        while (literalIterator.hasNext()) {
-//            currentLiteral = literalIterator.next();
-//            if (Math.abs(currentLiteral) == resolvingLiteral) {
-//                literalIterator.remove();
-//            }
-//            if (literalsSet.contains(currentLiteral) || literalsSet.contains(-currentLiteral)) {
-//                literalsSet.remove(currentLiteral);
-//                literalsSet.remove(-currentLiteral);
-//            }
-//        }
-//
-//        return new ArrayList<>(literalsSet);
-//    }
-
     private List<Integer> resolve(List<Integer> firstClauseLiterals, int resolvingLiteral) {
         List<Integer> secondClauseLiterals = clauses.get(variables.get(Math.abs(resolvingLiteral)-1).antecedant).literals;
         Set<Integer> literalsSet = new HashSet<>();
