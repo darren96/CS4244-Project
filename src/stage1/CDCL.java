@@ -2,6 +2,8 @@ package stage1;
 
 import java.util.*;
 
+import stage1.Clause.Satisfiability;
+
 public class CDCL {
 
     public enum ClauseSatisfiability {
@@ -168,7 +170,7 @@ public class CDCL {
     // tests whether all variables have been assigned
     private boolean allClausesSatisfied() {
         return clauses.stream()
-                .allMatch(clause -> clause.isSatisfied);
+                .allMatch(clause -> clause.isSatisfied == Satisfiability.SAT);
     }
 
     // selects a variable for truth assignment
