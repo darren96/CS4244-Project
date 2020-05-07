@@ -43,14 +43,16 @@ public class CDCL {
             return false;
         }
 
-        while (!allVarsAssigned() && !allClausesSatisfied()) {
+        while (!allVarsAssigned()) {
             Logger.printout("--------------------------------");
             Logger.printout("Not All Variables are assigned");
-            decisionLevel++;
-            Logger.printout("Decision Level: " + decisionLevel);
-            Assignment assignment = pickBranchingVar();
-            assignLiteral(assignment, -1);
-            while (unitPropagation() == ClauseSatisfiability.CONFLICT) {
+            if (findUnitClauses().size() == 0) {
+                decisionLevel++;
+                Logger.printout("Decision Level: " + decisionLevel);
+                Assignment assignment = pickBranchingVar();
+                assignLiteral(assignment, -1);
+            }
+            if (unitPropagation() == ClauseSatisfiability.CONFLICT) {
                 conflictCount++;
                 if(conflictCount == 256) {
                     for(Variable var : scoreHeap) {
@@ -170,8 +172,8 @@ public class CDCL {
 
     // selects a variable for truth assignment
     private Assignment pickBranchingVar() {
-        return linearVarPicker();
-        // return randomVarPicker();
+        // return linearVarPicker();
+        return randomVarPicker();
         // return VSIDSVarPicker();
     }
 
@@ -263,8 +265,8 @@ public class CDCL {
                 // if literal assignment level is the same as conflicting level
                 // and its antecedant clause is assigned
                 if (findLiteralAssignmentLevel(literal) == conflictDecisionLevel
-                        && variables.get(Math.abs(literal) - 1).antecedant != -1) {
-                    resolvingClause = clauses.get(variables.get(Math.abs(literal) - 1).antecedant);
+                        && variables.get(Math.abs(literal)).antecedant != -1) {
+                    resolvingClause = clauses.get(variables.get(Math.abs(literal)).antecedant);
                 }
             }
 
@@ -278,19 +280,20 @@ public class CDCL {
             previousLearntClause = learntClause;
             Logger.printout("\nLearnt Clause: " + learntClause.literals);
             if (resolvingClause != null) {
-                Logger.printout("Resolving Clause: " + resolvingClause);
+                Logger.printout("Resolving Clause: " + resolvingClause.literals);
                 learntClause = new Clause(resolve(learntClause.literals, resolvingClause.literals));
             }
         }
 
         Logger.printout("\nLearnt Clause: " + learntClause.literals);
 
-        if (resolvingClause != null) {
+        if (resolvingClause != null && !clauses.contains(learntClause)) {
             // add the newly created clause as a new clause
+            Logger.printout("New Clause: " + learntClause.literals);
             clauses.add(learntClause);
         }
 
-        // update the scores of the literals that is in the new clause
+        // update the scores of the lit4erals that is in the new clause
         for (int i = 0; i < learntClause.literals.size(); i++) {
             literal = learntClause.literals.get(i);
 
@@ -352,8 +355,10 @@ public class CDCL {
         literalsSet.addAll(resolvingClause);
 
         for (int resolvingLiteral : resolvingClause) {
+            if (literalsSet.contains(-resolvingLiteral)) {
                 literalsSet.remove(resolvingLiteral);
                 literalsSet.remove((-1) * resolvingLiteral);
+            }
         }
 
         return new ArrayList<>(literalsSet);
@@ -374,12 +379,13 @@ public class CDCL {
     private void assignLiteral(Assignment assignment, int antecedant) {
         int literal = assignment.truthValue ? assignment.variable : -1 * assignment.variable;
         clauses.stream()
-                .filter(clause -> clause.literals.contains(literal))
+                .filter(clause -> clause.literals.contains(literal)
+                    && clause.isSatisfied == Satisfiability.UNDECIDE)
                 .forEach(clause -> clause.isSatisfied = Satisfiability.SAT);
 
         clauses.stream()
                 .filter(clause -> (clause.literals.contains(literal) || clause.literals.contains(-literal)))
-                .forEach(clause -> clause.assignedLiterals.add(literal));
+                .forEach(clause -> clause.assignedLiterals.add(assignment.variable));
 
         clauses.stream()
                 .filter(clause -> clause.literals.contains(-literal)
@@ -402,11 +408,10 @@ public class CDCL {
         int literal = assignment.truthValue ? assignment.variable : -1 * assignment.variable;
         clauses.stream()
                 .filter(clause -> clause.literals.contains(literal) || clause.literals.contains(-literal))
-                .forEach(clause -> clause.isSatisfied = Satisfiability.UNDECIDE);
-
-        clauses.stream()
-                .filter(clause -> (clause.literals.contains(literal) || clause.literals.contains(-literal)))
-                .forEach(clause -> clause.assignedLiterals.remove(literal));
+                .forEach(clause -> {
+                    clause.isSatisfied = Satisfiability.UNDECIDE;
+                    clause.assignedLiterals.remove(assignment.variable);
+                });
 
         variables.get(assignment.variable).antecedant = -1;
         variables.get(assignment.variable).truthValue = null;
