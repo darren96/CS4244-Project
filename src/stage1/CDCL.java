@@ -45,14 +45,11 @@ public class CDCL {
 
         while (!allVarsAssigned()) {
             Logger.printout("--------------------------------");
-            Logger.printout("Not All Variables are assigned");
-            if (findUnitClauses().size() == 0) {
-                decisionLevel++;
-                Logger.printout("Decision Level: " + decisionLevel);
-                Assignment assignment = pickBranchingVar();
-                assignLiteral(assignment, -1);
-            }
-            if (unitPropagation() == ClauseSatisfiability.CONFLICT) {
+            decisionLevel++;
+            Logger.printout("Decision Level: " + decisionLevel);
+            Assignment assignment = pickBranchingVar();
+            assignLiteral(assignment, -1);
+            while (unitPropagation() == ClauseSatisfiability.CONFLICT) {
                 conflictCount++;
                 if(conflictCount == 256) {
                     for(Variable var : scoreHeap) {
