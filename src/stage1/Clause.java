@@ -1,13 +1,15 @@
 package stage1;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Clause {
     List<Integer> literals;
     Satisfiability isSatisfied;
-    int assignedLiterals;
+    Set<Integer> assignedLiterals;
 
     public enum Satisfiability {
         SAT,
@@ -18,7 +20,7 @@ public class Clause {
     public Clause(List<Integer> literals) {
         this.literals = literals;
         isSatisfied = Satisfiability.UNDECIDE;
-        assignedLiterals = 0;
+        assignedLiterals = new HashSet<>();
     }
 
     public Clause(String clauseString) {
@@ -27,6 +29,21 @@ public class Clause {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         isSatisfied = Satisfiability.UNDECIDE;
-        assignedLiterals = 0;
+        assignedLiterals = new HashSet<>();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Clause)) {
+            return false;
+        }
+
+        for (int literal : ((Clause) obj).literals) {
+            if (!this.literals.contains(literal)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
