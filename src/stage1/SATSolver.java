@@ -30,12 +30,19 @@ public class SATSolver {
         }
         initialise(file);
         CDCL cdcl = new CDCL(clauses, variables);
+        long startTime = System.nanoTime();
         boolean isSatisfiable = cdcl.checkSAT();
+        long endTime = System.nanoTime();
+
         if (isSatisfiable) {
             printAssignment(cdcl);
         } else {
             System.out.println("UNSAT");
         }
+
+        long timeTaken = (endTime - startTime) / 1000000;
+        System.out.println("Backtracking Invocation: " + cdcl.backtrackingInvocation);
+        System.out.println(String.format("Time Taken: %d ms", timeTaken));
     }
 
     static void initialise(String file) {
