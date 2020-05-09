@@ -38,7 +38,6 @@ public class CDCL {
     }
 
     public boolean checkSAT() {
-        
         if (unitPropagation() == ClauseSatisfiability.CONFLICT) {
             Logger.printout("UNSAT");
             return false;
@@ -51,7 +50,6 @@ public class CDCL {
             Assignment assignment = pickBranchingVar();
             assignVariable(assignment, -1);
             while (unitPropagation() == ClauseSatisfiability.CONFLICT) {
-                assignVariable(assignment, -1);
                 conflictCount++;
                 if(conflictCount == 256) {
                     for(Variable var : scoreHeap) {
@@ -173,9 +171,9 @@ public class CDCL {
 
     // selects a variable for truth assignment
     private Assignment pickBranchingVar() {
-        // return linearVarPicker();
+        return linearVarPicker();
         // return randomVarPicker();
-        return VSIDSVarPicker();
+        // return VSIDSVarPicker();
     }
 
     private Assignment randomVarPicker() {
@@ -186,10 +184,9 @@ public class CDCL {
             randomInteger = random.nextInt(variables.size() - 1) + 1;
         }
 
-        boolean randomTruthValue = random.nextBoolean();
-        variables.get(randomInteger).truthValue = randomTruthValue;
+        variables.get(randomInteger).truthValue = true;
 
-        return new Assignment(randomInteger, randomTruthValue, decisionLevel, true);
+        return new Assignment(randomInteger, true, decisionLevel, true);
     }
 
     // linear var picker with random truth value assignment
