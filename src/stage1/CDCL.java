@@ -161,12 +161,6 @@ public class CDCL {
                 .allMatch(variable -> variable.truthValue != null);
     }
 
-    // tests whether all variables have been assigned
-    private boolean allClausesSatisfied() {
-        return clauses.stream()
-                .allMatch(clause -> clause.isSatisfied == Satisfiability.SAT);
-    }
-
     // ------------ Branch Picking Related Methods ------------//
 
     // selects a variable for truth assignment
