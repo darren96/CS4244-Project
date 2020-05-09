@@ -49,7 +49,7 @@ public class CDCL {
             decisionLevel++;
             Logger.printout("Decision Level: " + decisionLevel);
             Assignment assignment = pickBranchingVar();
-            assignLiteral(assignment, -1);
+            assignVariable(assignment, -1);
             while (unitPropagation() == ClauseSatisfiability.CONFLICT) {
                 assignVariable(assignment, -1);
                 conflictCount++;
@@ -206,10 +206,9 @@ public class CDCL {
             }
         }
 
-        boolean randomTruthValue = random.nextBoolean();
-        variables.get(var).truthValue = randomTruthValue;
+        variables.get(var).truthValue = true;
 
-        return new Assignment(var, randomTruthValue, decisionLevel, true);
+        return new Assignment(var, true, decisionLevel, true);
     }
 
     // picking a branch with VSIDS heuristics
@@ -291,10 +290,14 @@ public class CDCL {
 
         Logger.printout("\nLearnt Clause: " + learntClause.literals);
 
-        if (resolvingClause != null && !clauses.contains(learntClause)) {
+        if (!clauses.contains(learntClause)) {
             // add the newly created clause as a new clause
             Logger.printout("New Clause: " + learntClause.literals);
-            clauses.add(learntClause);
+            Clause finalLearntClause = learntClause;
+            learntClause.literals.stream()
+                    .filter(lit -> assignmentList.stream().anyMatch(assignment -> assignment.variable == Math.abs(lit)))
+                    .forEach(lit -> finalLearntClause.assignedLiterals.add(Math.abs(lit)));
+            clauses.add(finalLearntClause);
         }
 
         // update the scores of the lit4erals that is in the new clause
@@ -306,7 +309,6 @@ public class CDCL {
             // Update score heap
             if(scoreHeap.contains(var)) {
                 scoreHeap.remove(var);
-                var.polarity += literal < 0 ? - 1 : 1;
                 var.score++;
                 scoreHeap.add(var);
             }
@@ -405,6 +407,7 @@ public class CDCL {
 
         variables.get(assignment.variable).antecedant = antecedant;
         variables.get(assignment.variable).truthValue = assignment.truthValue;
+        variables.get(assignment.variable).decidedLevel = assignment.decisionLevel;
 
         assignmentList.add(assignment);
 
@@ -426,5 +429,6 @@ public class CDCL {
 
         variables.get(assignment.variable).antecedant = -1;
         variables.get(assignment.variable).truthValue = null;
+        variables.get(assignment.variable).decidedLevel = -1;
     }
 }
