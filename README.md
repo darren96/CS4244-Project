@@ -21,16 +21,11 @@ This project is done using `Java` version `9`.
 Preferably using this option to run. If you're using IDE like `IntelliJ`, you have to go to `Run > Edit Configurations
 ` to add a new `Application`. Next, you have to choose `SATSolver`.
 Finally, now, you can click on `run`.<br><br>
-If you're not using IDE, you could just run the command `javac *.java` from the Directory `src/stage1` in your
- `terminal` to 
-compile the `java` files.Then, you could run the following command `java SATSolver`. 
-Eg: `java SATSolver`.
+If you're not using IDE, you could run the following command `java -jar SATSolver`. 
 
 <b>3. How to run the `RandomCNFGenerator`?</b><br>
+First, go to File > Project Structure > Libraries. Then, click the `+` button and choose lib folder. Next, in the
+ same window, go to `Module` and select `Dependencies`. Make sure that `lib` is checked.
 Preferably using this option to run. If you're using IDE like `IntelliJ`, you have to go to `Run > Edit Configurations
 ` to add a new `Application`. Next, you have to choose `RandomCNFGenerator`.
 Finally, now, you can click on `run`.<br><br>
-If you're not using IDE, you could just run the command `javac *.java` from the Directory `src/stage2` in your `terminal
-` to 
-compile the `java` files.Then, you could run the following command `java SATSolver`. 
-Eg: `java RandomCNFGenerator`.
