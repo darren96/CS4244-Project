@@ -1,0 +1,50 @@
+input/others/count_9_3.cnf - SAT
+Random Branch Picker
+Backtracking Invocation: 0
+Time Taken: 215 ms
+Backtracking Invocation: 0
+Time Taken: 241 ms
+Backtracking Invocation: 0
+Time Taken: 146 ms
+
+Linear Branch Picker
+Backtracking Invocation: 0
+Time Taken: 125 ms
+
+VSIDS Branch Picker
+Backtracking Invocation: 0
+Time Taken: 121 ms
+
+input/others/php_5_4.cnf - UNSAT
+Random Branch Picker
+Backtracking Invocation: 9
+Time Taken: 140 ms
+Backtracking Invocation: 10
+Time Taken: 175 ms
+Backtracking Invocation: 14
+Time Taken: 112 ms
+
+Linear Branch Picker
+Backtracking Invocation: 11
+Time Taken: 110 ms
+
+VSIDS Branch Picker
+Backtracking Invocation: 7
+Time Taken: 126 ms
+
+input/others/kcolor_3_grid_15_15.cnf - SAT
+Random Branch Picker
+Backtracking Invocation: 4
+Time Taken: 880 ms
+Backtracking Invocation: 6
+Time Taken: 932 ms
+Backtracking Invocation: 4
+Time Taken: 857 ms
+
+Linear Branch Picker
+Backtracking Invocation: 0
+Time Taken: 721 ms
+
+VSIDS Branch Picker
+Backtracking Invocation: 0
+Time Taken: 653 ms
